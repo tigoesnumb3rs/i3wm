@@ -1,0 +1,298 @@
+##  awesome i3-wm configuration:
+
+
+###############################################################################################
+#   i3 base config:
+###############################################################################################
+
+### set the modifier key:
+set $mod Mod4
+
+### use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+### movement keys:
+
+#   use these keys for focus, movement, and resize directions when reaching for
+#   the arrows is not convenient
+set $up     k   
+set $down   j    
+set $left   h     
+set $right  l      
+
+### reload / restart i3:
+
+#   reload the configuration file and check for errors
+bindsym Mod4+Shift+c reload
+
+#   restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym Mod4+Shift+r restart
+
+# exit i3 (logs you out of your X session)
+bindsym Mod4+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym $left       resize shrink width 10 px or 10 ppt
+        bindsym $down       resize grow height 10 px or 10 ppt
+        bindsym $up         resize shrink height 10 px or 10 ppt
+        bindsym $right      resize grow width 10 px or 10 pptbindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 -- +10% && killall -SIGUSR1 i3status
+        # same bindings, but for the arrow keys
+        bindsym Left        resize shrink width 10 px or 10 ppt
+        bindsym Down        resize grow height 10 px or 10 ppt
+        bindsym Up          resize shrink height 10 px or 10 ppt
+        bindsym Right       resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+bindsym Mod4+r mode "resize"
+
+
+###############################################################################################
+##  autostart / scripts:
+###############################################################################################
+
+
+### i3 system font:
+#   used for e.g. tabbars.. not for the statusbar as far as I could tell..
+font pango: Inconsolata-g 7
+#   the statusbarfont will be configured further below
+
+
+### powerd management
+
+##  using gnomes power management:
+#exec --no-startup-id gnome-settings-daemon
+#   for ubuntu systems > 14.10 with no gnome installed but the default unity, use the following instead:
+#exec --no-startup-id unity-settings-daemon # or simply don't use ubuntu.. ubuntu sucks
+#   gnomes settings daemon will also take care of the gtk/qt themes, media buttons and similiar stuff..
+#   it's probably the easiest way to get a lot of stuff working out of the box
+
+##  using xfces power management:
+exec --no-startup-id sleep 3 && xfce4-power-manager
+
+##  using kde4/5 power management:
+#   this one is slightly more complicated. You basically start the kde 4/5 session, using i3,
+#   as window manager, which leaves you with a fully featured kde session 
+#   For kde4 sstems you need to modify the startup of krunner and plasma-desktop by creating
+#   some autostart files in your home folder
+
+
+### hardware specific settings
+
+#  you might be using a device with trackpoint, so here's how to disable the touchpad
+#   change the prop id to the one of your touchpad
+#   use 'xinput --list' to find out which props to disable
+exec --no-startup-id xinput set-prop 11 "Device Enabled" 0
+
+
+### wallpaper:
+exec --no-startup-id feh --bg-fill ~/.i3/wallpaper.jpg
+
+
+### start tray applets:
+exec --no-startup-id nm-applet
+
+
+### lock session:
+bindsym Mod4+Control+l exec ~/.i3/lock.sh
+
+
+###############################################################################################
+##  keybindings / default applications:
+###############################################################################################
+
+
+### default terminal emulator:
+#bindsym Mod4+Return exec i3-sensible-terminal
+#   konsole rules (e.g.: Ctrl + Shift + f):
+bindsym Mod4+Return exec konsole
+
+
+### launch applications:
+##  start dmenu (a program launcher):
+#bindsym Mod3+p exec dmenu_run
+##  There also is the (new) i3-dmenu-desktop which only displays applications
+#   shipping a .desktop file. It is a wrapper around dmenu, so you need that
+#   installed.
+#bindsym Mod4+d exec --no-startup-id i3-dmenu-desktop
+
+##  alternatively give rofi a try (https://github.com/DaveDavenport/rofi):
+bindsym Mod4+d exec --no-startup-id rofi -show run -sidebar-mode -terminal konsole
+#   focus any window, regardless on where you left it.. pretty nice feature:
+bindsym Mod4+Shift+w exec --no-startup-id rofi -show window -terminal konsole
+
+
+### window management:
+
+#   kill focused window
+bindsym Mod4+Shift+q kill
+
+#   change focus
+bindsym Mod4+$left focus left
+bindsym Mod4+$down focus down
+bindsym Mod4+$up focus up
+bindsym Mod4+$right focus right
+
+#   alternatively, you can use the cursor keys:
+bindsym Mod4+Left focus left
+bindsym Mod4+Down focus down
+bindsym Mod4+Up focus up
+bindsym Mod4+Right focus right
+
+#    move focused window
+bindsym Mod4+Shift+$left move left
+bindsym Mod4+Shift+$down move down
+bindsym Mod4+Shift+$up move up
+bindsym Mod4+Shift+$right move right
+
+#   alternatively, you can use the cursor keys:
+bindsym Mod4+Shift+Left move left
+bindsym Mod4+Shift+Down move down
+bindsym Mod4+Shift+Up move up
+bindsym Mod4+Shift+Right move right
+
+#   enter fullscreen mode for the focused container
+bindsym Mod4+f fullscreen
+
+#   toggle tiling / floating
+bindsym Mod4+Shift+space floating toggle
+
+#   change focus between tiling / floating windows
+bindsym Mod4+space focus mode_toggle
+
+#   move the currently focused window to the scratchpad
+bindsym Mod4+Shift+minus move scratchpad
+
+#   Show the next scratchpad window or hide the focused scratchpad window.
+#   If there are multiple scratchpad windows, this command cycles through them.
+bindsym Mod4+minus scratchpad show
+
+
+### tiling / container management:
+#   split in horizontal orientation
+bindsym Mod4+Shift+v split h
+
+#   split in vertical orientation
+bindsym Mod4+v split v
+
+#   change container layout (stacked, tabbed, toggle split)
+bindsym Mod4+s layout stacking
+bindsym Mod4+w layout tabbed
+bindsym Mod4+e layout toggle split
+
+#   focus the parent container
+bindsym Mod4+a focus parent
+
+#   focus the child container
+bindsym Mod4+Shift+d focus child
+
+#   define container modes
+bindsym Mod4+t border normal
+bindsym Mod4+z border 1pixel
+bindsym Mod4+u border none
+
+#   define borders of new windows
+new_window pixel 1
+new_float pixel 1
+
+
+###############################################################################################
+#   workspace management:
+###############################################################################################
+
+### define workspaces:
+#   alternatvely it's possible to set workspace names:
+#   e.g.: 'set WS1 WORKSPACETITLE', it's also possible to use fontsymbols.. 
+set $WS1    1
+set $WS2    2
+set $WS3    3
+set $WS4    4
+set $WS5    5
+set $WS6    6
+set $WS7    7  
+set $WS8    8
+set $WS9    9
+set $WS10  10 
+
+
+### switch to workspace
+bindsym Mod4+1 workspace $WS1
+bindsym Mod4+2 workspace $WS2
+bindsym Mod4+3 workspace $WS3
+bindsym Mod4+4 workspace $WS4
+bindsym Mod4+5 workspace $WS5
+bindsym Mod4+6 workspace $WS6
+bindsym Mod4+7 workspace $WS7
+bindsym Mod4+8 workspace $WS8
+bindsym Mod4+9 workspace $WS9
+bindsym Mod4+0 workspace $WS10
+
+
+### move focused container to workspace
+bindsym Mod4+Shift+1 move container to workspace $WS1
+bindsym Mod4+Shift+2 move container to workspace $WS2
+bindsym Mod4+Shift+3 move container to workspace $WS3
+bindsym Mod4+Shift+4 move container to workspace $WS4
+bindsym Mod4+Shift+5 move container to workspace $WS5
+bindsym Mod4+Shift+6 move container to workspace $WS6
+bindsym Mod4+Shift+7 move container to workspace $WS7
+bindsym Mod4+Shift+8 move container to workspace $WS8
+bindsym Mod4+Shift+9 move container to workspace $WS9
+bindsym Mod4+Shift+0 move container to workspace $WS10
+
+
+### move between workspaces
+bindsym Mod4+y workspace prev
+bindsym Mod4+x workspace next
+bindsym Mod4+c workspace back_and_forth
+
+
+###############################################################################################
+#   statusbar:
+###############################################################################################
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+bar {
+        position top
+        #status_command i3status
+        #   python alternative to i3status.. can handle click events:    
+        status_command py3status
+        font pango: Inconsolata-g 6
+        #tray_output none
+        #strip_workspace_numbers yes
+        colors {
+                #statusline #606060
+                background #242424
+                focused_workspace #242424 #D5D5D5 #242424 
+                inactive_workspace #242424 #282828 #CCCAC
+                urgent_workspace   #1A1A1A #664742 #1b1b1b
+        }                                                                                                        
+}
+ 
+
+###############################################################################################
+#   window specific rules:
+###############################################################################################
+
+
+### enable floating for specific windows:
+#   use xprop to find out windowclass:
+for_window [window_role="pop-up"] floating enable
+for_window [class="mpv"] floating enable
+for_window [class="Arandr"] floating enable
+
+
+### it's also possible to assing specific applications to specific workspaces:
+#   use sth like that:
+#assign [class="mplayer"] $WS6
+#assign [class="(?i)pidgin"] → $WS2
